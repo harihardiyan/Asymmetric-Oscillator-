@@ -1,6 +1,5 @@
 
-
-# Quantum Stability of Parity-Broken Asymmetric Oscillators via Spectral Curvature
+# Structural Stability of Parity-Broken Asymmetric Quantum Oscillators via Spectral Curvature Matrices
 
 ![Python Version](https://img.shields.io/badge/python-3.9%2B-blue?logo=python&logoColor=white)
 ![JAX](https://img.shields.io/badge/Accelerated_by-JAX-orange?logo=google&logoColor=white)
@@ -8,19 +7,17 @@
 ![License](https://img.shields.io/badge/license-MIT-green)
 
 ## 1. Abstract
-This computational framework investigates the structural stability of an **Asymmetric Cubic-Sextic Quantum Oscillator**. Unlike symmetric models, this system incorporates a cubic non-linearity ($\beta x^3$) that breaks parity symmetry, leading to non-zero displacement expectations and skewness in the ground-state wave function. Using **JAX-accelerated spectral methods**, the tool maps the stability boundaries in the $(\beta, \alpha)$ parameter space by analyzing the positive-definiteness of the curvature matrix $K$.
+This repository provides an advanced computational framework to investigate the structural stability and quantum observables of an **Asymmetric Cubic-Sextic Oscillator**. Unlike standard symmetric models, this system incorporates a cubic non-linearity ($\beta x^3$) that breaks parity symmetry ($\hat{P}$), leading to non-trivial ground-state displacements and skewness. Utilizing **JAX-accelerated spectral methods**, the engine maps stability boundaries in the $(\beta, \alpha)$ parameter space, ensuring high-fidelity results through double-precision (x64) calculations and automated bisection algorithms.
 
 ## 2. Project Structure (Root Tree)
 ```text
-Duffing-Oscillator-via-Spectral-Curvature/
-├── .gitignore               # Excludes temporary Python & JAX files
-├── LICENSE                  # MIT License full text
-├── README.md                # Project documentation (Journal-style)
-├── requirements.txt         # Dependencies (JAX, NumPy)
-├── results/                 # Output logs and simulation data
+Asymmetric-Oscillator/
+├── .gitignore               # Excludes JAX cache and temporary files
+├── LICENSE                  # MIT License (2026)
+├── README.md                # Scientific documentation
+├── requirements.txt         # Core dependencies (JAX, NumPy)
 └── src/                     
-    ├── duffing_q1_curvature_jax.py          # Symmetric case
-    └── asymmetric_cubic_sextic_jax.py       # Asymmetric (Parity-Broken) case
+    └── asymmetric_cubic_sextic_jax.py  # Principal simulation engine
 ```
 
 ---
@@ -35,32 +32,33 @@ Duffing-Oscillator-via-Spectral-Curvature/
 ---
 
 ## 3. Physical Model: The Asymmetric Hamiltonian
-The system is defined by a Hamiltonian that incorporates quadratic, cubic, quartic, and sextic terms:
+The system investigates a particle governed by a parity-broken potential, defined by the following sextic Hamiltonian:
 $$\hat{H} = \frac{\hat{p}^2}{2m} + \frac{1}{2}m\omega^2\hat{x}^2 + \beta\hat{x}^3 + \alpha\hat{x}^4 + \gamma\hat{x}^6$$
 
 Where:
-*   **$\beta x^3$**: The asymmetry term. It "tilts" the potential well, forcing $\langle x \rangle \neq 0$.
-*   **$\alpha x^4$**: The quartic term, whose stability boundary $\alpha^*$ is the primary object of study.
-*   **$\gamma x^6$**: The sextic term, ensuring global stability as $x \to \pm \infty$.
+*   **$\beta \hat{x}^3$**: The cubic asymmetry term responsible for symmetry breaking.
+*   **$\alpha \hat{x}^4$**: The quartic parameter, whose critical stability threshold ($\alpha^*$) is numerically determined.
+*   **$\gamma \hat{x}^6$**: The sextic stabilization term, ensuring the potential remains bounded for large displacements.
 
-## 4. Methodology & Observables
-### 4.1 Stability Curvature Matrix
-Stability is determined by the minimum eigenvalue of the 2x2 curvature matrix $K$:
+## 4. Methodology
+### 4.1 Stability via Curvature Analysis
+Stability is rigorously defined by the positive-definiteness of the curvature matrix $K$. In the asymmetric regime, the spatial curvature $K_{xx}$ is sensitive to the first and second moments of the ground state:
 $$K_{xx} = m\omega^2 + 6\beta\langle x \rangle + 12\alpha\langle x^2 \rangle + 30\gamma\langle x^4 \rangle$$
-The system remains stable as long as $\lambda_{min}(K) > 0$.
+The software identifies the boundary where the minimum eigenvalue $\lambda_{min}(K) \to 0$.
 
-### 4.2 Higher-Order Moments
-The broken parity necessitates the study of:
-*   **Skewness ($\mathcal{S}$)**: Measured via $\langle x^3 \rangle / \langle x^2 \rangle^{1.5}$, indicating the asymmetry of the probability distribution.
-*   **Kurtosis ($\mathcal{K}$)**: Measured via $\langle x^4 \rangle / \langle x^2 \rangle^2$, indicating the "fatness" of the tails of the wave function.
+### 4.2 Quantum Observables
+Beyond stability, the engine computes higher-order spectral moments:
+*   **Skewness ($\mathcal{S}$)**: $\langle \hat{x}^3 \rangle / \langle \hat{x}^2 \rangle^{1.5}$, quantifying the asymmetry of the wave function.
+*   **Kurtosis ($\mathcal{K}$)**: $\langle \hat{x}^4 \rangle / \langle \hat{x}^2 \rangle^2$, measuring the "fatness" of the distribution tails.
+*   **Displacement ($\langle x \rangle$)**: The expectation value of the position operator, which vanishes in symmetric systems but is non-zero here.
 
 ## 5. Implementation Highlights
-*   **Non-NaN Boundary Collection:** Integrated logic to skip regions where no boundary is found, ensuring continuous execution.
-*   **Bisection Algorithm:** A 40-iteration refinement process to locate the critical $\alpha^*$ with a precision of $10^{-4}$.
-*   **Fock Space Scaling:** Lightweight $N=64$ configuration to optimize memory for boundary scanning across $\beta$ grids.
+*   **JAX vmap & Bisection:** Parallelized grid scanning for initial boundary detection, followed by a 40-step bisection algorithm to refine $\alpha^*$ with $10^{-4}$ precision.
+*   **Non-NaN Collection:** A robust pipeline that filters and collects only valid physical boundaries across the $\beta$ grid.
+*   **Memory Optimization:** Uses a lightweight basis size ($N=64$) for rapid phase-boundary mapping without sacrificing spectral convergence in the low-energy regime.
 
-## 6. Example Research Output
-Typical output when running the asymmetric stability scan:
+## 6. Example Output & Results
+The following metrics represent a typical execution for $\gamma=0.006$ and $\omega=1.0$ across a $\beta$ range of $[-1.2, 1.2]$:
 
 ```text
 [Boundary count] found=25 of 25 betas
@@ -69,14 +67,18 @@ Typical output when running the asymmetric stability scan:
 ```
 
 ## 7. License
-This project is licensed under the **MIT License**. (See the LICENSE file for details).
+This project is licensed under the **MIT License**.
+
+Copyright (c) 2026 Hari Hardiyan
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions...
 
 ## 8. Citation
-> **Hardiyan, H. (2026).** *Stability of Parity-Broken Quantum Oscillators via JAX-Accelerated Curvature Matrices.* GitHub: harihardiyan/Duffing-Oscillator-via-Spectral-Curvature.
+If this research code is used in scientific publications, please cite as:
+> **Hardiyan, H. (2026).** *Structural Stability of Parity-Broken Quantum Oscillators via JAX-Accelerated Curvature Matrices.* GitHub: [harihardiyan/Asymmetric-Oscillator-](https://github.com/harihardiyan/Asymmetric-Oscillator-).
 
 ---
-*Developed with AI Tamer and Microsoft Copilot.*
+*Facilitated by AI Tamer and Microsoft Copilot as part of a computational physics development initiative.*
 
 ---
 
- 
