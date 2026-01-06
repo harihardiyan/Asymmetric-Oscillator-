@@ -1,0 +1,23 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# JAX & XLA temporary files
+.jax_cache/
+*.nvcomp
+*.log
+
+# Environments
+.venv/
+venv/
+ENV/
+env.bak/
+
+# Project results & logs
+results/*.txt
+!results/.gitkeep
+
+# OS specific
+.DS_Store
+Thumbs.db
