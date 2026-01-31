@@ -62,8 +62,9 @@ The following metrics represent a typical execution for $\gamma=0.006$ and $\ome
 
 ```text
 [Boundary count] found=25 of 25 betas
-[Boundary] β range=-1.200..1.200 | α* range=-2.215..-1.845
-[Observables @ boundary] <x>: mean(|x|)=4.5021e-01 | <x^2>: min=8.2104e-01, max=1.1245e+00 | skew: mean=1.2405e-01 | kurtosis: mean=4.1204
+[Boundary] β range=-1.200..1.200 | α* range=-1.663..-1.606
+[Observables @ boundary] <x>: mean(|x|)=1.0105e+01 | <x^2>: min=1.1080e+02, max=1.1080e+02 | skew: mean=-1.7764e-17 | kurtosis: mean=1.0000
+
 ```
 
 ## 7. License
